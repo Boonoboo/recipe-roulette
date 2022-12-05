@@ -6,7 +6,7 @@ import { getApiToken } from "./getApiToken";
 export const getRecipe = async () => {
   const token = await getApiToken();
   const res = await fetch(
-    `https://www.hellofresh.com/gw/api/recipes/search/suggestions?country=US&locale=en-US&take=100`,
+    `https://www.hellofresh.com/gw/api/recipes/search/suggestions?country=dk&locale=da-DK&take=100`,
     {
       method: "GET",
       headers: {

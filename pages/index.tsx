@@ -35,9 +35,9 @@ export default function Home() {
         <Spacer />
         {recipe && (
           <>
-            <Text>How about...</Text>
+            <Text>Hvad med...</Text>
             <Link
-              href={`https://www.hellofresh.com/recipes/${
+              href={`https://www.hellofresh.dk/recipes/${
                 (recipe as any).slug
               }-${(recipe as any).id}`}
             >
@@ -47,7 +47,7 @@ export default function Home() {
         )}
         <Button onClick={() => setIsInitialized(false)}>
           {isLoading && <Loading />}
-          {!isLoading && "Nope, lemme try again"}
+          {!isLoading && "Nej, om igen"}
         </Button>
       </>
     </Container>

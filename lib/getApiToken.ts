@@ -2,7 +2,7 @@
 // then returns it.
 export const getApiToken = async () => {
   const res = await fetch(
-    "https://www.hellofresh.com/gw/auth/token?client_id=senf&grant_type=client_credentials&scope=public&locale=en-US&country=us",
+    "https://www.hellofresh.com/gw/auth/token?client_id=senf&grant_type=client_credentials&scope=public&locale=da-DK&country=dk",
     {
       method: "POST",
     }
