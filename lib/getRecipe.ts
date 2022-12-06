@@ -1,12 +1,12 @@
 import { getApiToken } from "./getApiToken";
 
 /**
- * Gets a random recipe from the HelloFresh API
+ * Gets all recipes from the HelloFresh API
  */
-export const getRecipe = async () => {
+export const getAllRecipes = async () => {
   const token = await getApiToken();
   const res = await fetch(
-    `https://www.hellofresh.com/gw/api/recipes/search/suggestions?country=dk&locale=da-DK&take=100`,
+    `https://www.hellofresh.com/gw/api/recipes/search/suggestions?country=dk&locale=da-DK&take=10000`,
     {
       method: "GET",
       headers: {
@@ -14,9 +14,31 @@ export const getRecipe = async () => {
       },
     }
   );
-  const data: CMSResponse = await res.json();
+
+  const data: Collection<RecipeSearchResult> = await res.json();
   const items = data.items.flatMap((item) => item.items);
-  const randomItem = items[Math.floor(Math.random() * items.length)];
+  return items;
+};
+
+/**
+ * Fetches recipes from the HelloFresh API and caches them in localStorage
+ */
+export const fetchAndCacheRecipes = async () => {
+  if (localStorage.getItem("recipes")) {
+    return JSON.parse(localStorage.getItem("recipes") || "[]");
+  } else {
+    const recipes = await getAllRecipes();
+    localStorage.setItem("recipes", JSON.stringify(recipes));
+    return recipes;
+  }
+};
+
+/**
+ * Gets a random recipe from the HelloFresh API
+ */
+export const getRecipe = async (recipes: RecipeSearchResult[]) => {
+  const randomItem = recipes[Math.floor(Math.random() * recipes.length)];
+  const token = await getApiToken();
 
   const recipe = await fetch(
     `https://www.hellofresh.com/gw/api/recipes/${randomItem.recipeId}`,
@@ -31,18 +53,18 @@ export const getRecipe = async () => {
   return recipeData;
 };
 
-type CMSResponse = {
+type Collection<T> = {
   count: number;
-  items: ItemGroup[];
+  items: ItemGroup<T>[];
   skip: number;
   take: number;
   total: number | null;
 };
 
-type ItemGroup = {
+type ItemGroup<T> = {
   group: string;
   group_title: string;
-  items: RecipeSearchResult[];
+  items: T[];
 };
 
 type RecipeSearchResult = {
