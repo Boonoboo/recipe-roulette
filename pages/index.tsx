@@ -11,6 +11,7 @@ import {
 } from "@nextui-org/react";
 
 import { fetchAndCacheRecipes, getRecipe } from "../lib/getRecipe";
+import Image from "next/image";
 
 const Center: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   children,
@@ -18,11 +19,15 @@ const Center: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
 }) => (
   <div
     style={{
+      maxWidth: "600px",
+      paddingLeft: "2rem",
+      paddingRight: "2rem",
+      marginTop: "40px",
+      marginLeft: "auto",
+      marginRight: "auto",
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
-      alignItems: "center",
-      minHeight: "80vh",
     }}
     {...rest}
   >
@@ -40,41 +45,46 @@ export default function Home() {
       setIsInitialized(true);
       const fetchRecipesPromise = fetchAndCacheRecipes();
       setIsLoading(true);
-      fetchRecipesPromise.then((recipes) => {
-        getRecipe(recipes).then((recipe) => {
-          setRecipe(recipe);
-          setIsLoading(false);
-        });
+      getRecipe().then((recipe) => {
+        setRecipe(recipe);
+        setIsLoading(false);
       });
     }
   }, [isInitialized]);
 
+  const toReplace = ((recipe as any)?.image as string)?.split("/image");
+  const imageUrl = recipe
+    ? `https://img.hellofresh.com/w_600,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3/image${toReplace[1]}`
+    : undefined;
   return (
-    <Container>
-      <Center>
-        <>
-          <Text>
-            {isLoading ? "Finder opskrift..." : "Hvad med at lave..."}
-          </Text>
+    <Center>
+      <>
+        <Text>{isLoading ? "Finder opskrift..." : "Hvad med at lave..."}</Text>
 
-          {recipe && !isLoading ? (
+        {recipe && !isLoading ? (
+          <>
             <Link
               href={`https://www.hellofresh.dk/recipes/${
                 (recipe as any).slug
-              }-${(recipe as any).id}`}
+              }-${(recipe as any).recipeId}`}
             >
-              <h1>{(recipe as any).name}</h1>
+              <h1 style={{ marginBottom: 0 }}>{(recipe as any).title}</h1>
             </Link>
-          ) : (
-            <h1>...</h1>
-          )}
-          <Spacer />
-          <Button onClick={() => setIsInitialized(false)}>
-            {isLoading && <Loading />}
-            {!isLoading && "Nej, om igen"}
-          </Button>
-        </>
-      </Center>
-    </Container>
+            <h2>{(recipe as any).headline}</h2>
+          </>
+        ) : (
+          <h1>...</h1>
+        )}
+        {/*eslint-disable-next-line @next/next/no-img-element*/}
+        {imageUrl && (
+          <img src={imageUrl} alt="" style={{ borderRadius: "12px" }} />
+        )}
+        <Spacer />
+        <Button onClick={() => setIsInitialized(false)}>
+          {isLoading && <Loading />}
+          {!isLoading && "Nej tak, om igen"}
+        </Button>
+      </>
+    </Center>
   );
 }

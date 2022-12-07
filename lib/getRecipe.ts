@@ -6,7 +6,7 @@ import { getApiToken } from "./getApiToken";
 export const getAllRecipes = async () => {
   const token = await getApiToken();
   const res = await fetch(
-    `https://www.hellofresh.com/gw/api/recipes/search/suggestions?country=dk&locale=da-DK&take=10000`,
+    `https://www.hellofresh.com/gw/api/recipes/search/suggestions?country=dk&locale=da-DK&take=5000`,
     {
       method: "GET",
       headers: {
@@ -33,10 +33,16 @@ export const fetchAndCacheRecipes = async () => {
   }
 };
 
+export const getRecipe = async () => {
+  const recipes = await fetchAndCacheRecipes();
+  const randomRecipe = recipes[Math.floor(Math.random() * recipes.length)];
+  return randomRecipe;
+};
+
 /**
  * Gets a random recipe from the HelloFresh API
  */
-export const getRecipe = async (recipes: RecipeSearchResult[]) => {
+const getFullRecipe = async (recipes: RecipeSearchResult[]) => {
   const randomItem = recipes[Math.floor(Math.random() * recipes.length)];
   const token = await getApiToken();
 
