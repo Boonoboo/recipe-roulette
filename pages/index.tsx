@@ -83,7 +83,13 @@ export default function Home() {
           )}
           {/*eslint-disable-next-line @next/next/no-img-element*/}
           {imageUrl && (
-            <img src={imageUrl} alt="" style={{ borderRadius: "12px" }} />
+            <Link
+              href={`https://www.hellofresh.dk/recipes/${
+                (recipe as any).slug
+              }-${(recipe as any).recipeId}`}
+            >
+              <img src={imageUrl} alt="" style={{ borderRadius: "12px" }} />
+            </Link>
           )}
           <Spacer />
           <Button onClick={() => setIsInitialized(false)}>
