@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 
 import { fetchAndCacheRecipes, getRecipe } from "../lib/getRecipe";
-import Image from "next/image";
+import Head from "next/head";
 
 const Center: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   children,
@@ -57,34 +57,41 @@ export default function Home() {
     ? `https://img.hellofresh.com/w_600,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3/image${toReplace[1]}`
     : undefined;
   return (
-    <Center>
-      <>
-        <Text>{isLoading ? "Finder opskrift..." : "Hvad med at lave..."}</Text>
+    <>
+      <Head>
+        <title>Recipe Roulette</title>
+      </Head>
+      <Center>
+        <>
+          <Text>
+            {isLoading ? "Finder opskrift..." : "Hvad med at lave..."}
+          </Text>
 
-        {recipe && !isLoading ? (
-          <>
-            <Link
-              href={`https://www.hellofresh.dk/recipes/${
-                (recipe as any).slug
-              }-${(recipe as any).recipeId}`}
-            >
-              <h1 style={{ marginBottom: 0 }}>{(recipe as any).title}</h1>
-            </Link>
-            <h2>{(recipe as any).headline}</h2>
-          </>
-        ) : (
-          <h1>...</h1>
-        )}
-        {/*eslint-disable-next-line @next/next/no-img-element*/}
-        {imageUrl && (
-          <img src={imageUrl} alt="" style={{ borderRadius: "12px" }} />
-        )}
-        <Spacer />
-        <Button onClick={() => setIsInitialized(false)}>
-          {isLoading && <Loading />}
-          {!isLoading && "Nej tak, om igen"}
-        </Button>
-      </>
-    </Center>
+          {recipe && !isLoading ? (
+            <>
+              <Link
+                href={`https://www.hellofresh.dk/recipes/${
+                  (recipe as any).slug
+                }-${(recipe as any).recipeId}`}
+              >
+                <h1 style={{ marginBottom: 0 }}>{(recipe as any).title}</h1>
+              </Link>
+              <h2>{(recipe as any).headline}</h2>
+            </>
+          ) : (
+            <h1>...</h1>
+          )}
+          {/*eslint-disable-next-line @next/next/no-img-element*/}
+          {imageUrl && (
+            <img src={imageUrl} alt="" style={{ borderRadius: "12px" }} />
+          )}
+          <Spacer />
+          <Button onClick={() => setIsInitialized(false)}>
+            {isLoading && <Loading />}
+            {!isLoading && "Nej tak, om igen"}
+          </Button>
+        </>
+      </Center>
+    </>
   );
 }
